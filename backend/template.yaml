@@ -1,0 +1,30 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Presigned S3 image upload API
+
+Globals:
+  Function:
+    Runtime: nodejs20.x
+    Timeout: 15
+    MemorySize: 256
+
+Resources:
+  UploadApi:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handler.handler
+      Environment:
+        Variables:
+          AWS_REGION: !Ref AWS::Region
+          S3_BUCKET_NAME: your-bucket-name
+          DATABASE_URL: postgresql://user:password@host:5432/presigned_url
+          FRONTEND_ORIGIN: https://your-frontend.example.com
+      Policies:
+        - S3WritePolicy:
+            BucketName: your-bucket-name
+      Events:
+        Api:
+          Type: HttpApi
+          Properties:
+            Path: /{proxy+}
+            Method: ANY

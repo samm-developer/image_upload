@@ -1,0 +1,64 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+:root {
+  font-family: 'Space Grotesk', sans-serif;
+  color: #15231e;
+  background: #ece9df;
+  font-synthesis: none;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; }
+button, input { font: inherit; }
+
+.page-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 520px);
+  gap: clamp(48px, 9vw, 150px);
+  align-items: center;
+  padding: clamp(32px, 8vw, 110px);
+  background: radial-gradient(circle at 10% 90%, #d6e5d6 0, transparent 34%), radial-gradient(circle at 90% 10%, #f6c5a9 0, transparent 30%), #ece9df;
+}
+
+.intro { max-width: 600px; }
+.eyebrow, .kicker, .flow, .privacy-note, .message small { font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .08em; }
+.eyebrow, .kicker { color: #d65d3c; font-size: 11px; font-weight: 500; }
+h1 { font-size: clamp(54px, 8vw, 108px); line-height: .9; letter-spacing: -0.05em; margin: 26px 0 30px; font-weight: 600; }
+h1 em { color: #d65d3c; font-style: normal; }
+.lede { max-width: 400px; font-size: 18px; line-height: 1.5; color: #526159; }
+.flow { display: flex; align-items: center; gap: 14px; margin-top: 58px; font-size: 10px; color: #526159; }
+.flow i { display: block; width: 35px; border-top: 1px solid #a8aaa0; }
+
+.upload-panel { background: #f8f6ef; border: 1px solid #d5d5c9; padding: clamp(24px, 4vw, 42px); box-shadow: 14px 14px 0 #d6e5d6; }
+.panel-heading { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 28px; }
+.kicker { margin: 0 0 9px; color: #7d887e; }
+h2 { margin: 0; font-size: 30px; letter-spacing: -0.04em; }
+.status-dot { width: 10px; height: 10px; border-radius: 50%; background: #b9c0b8; }
+.status-dot.success { background: #4d9a64; }
+.status-dot.error { background: #d65d3c; }
+.status-dot.signing, .status-dot.uploading, .status-dot.confirming { background: #e6a33d; }
+
+.dropzone { min-height: 230px; border: 1px dashed #aeb6aa; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; cursor: pointer; transition: background .2s, border-color .2s; text-align: center; padding: 24px; }
+.dropzone:hover, .dropzone.has-file { background: #eef3eb; border-color: #65836a; }
+.dropzone input { display: none; }
+.plus, .file-icon { color: #d65d3c; font-size: 42px; line-height: 1; font-weight: 300; }
+.file-icon { font-family: 'DM Mono', monospace; font-size: 17px; border: 1px solid #d65d3c; padding: 9px 7px; }
+.dropzone strong { font-size: 17px; }
+.dropzone small { color: #7d887e; }
+button { width: 100%; display: flex; justify-content: space-between; align-items: center; border: 0; background: #15231e; color: #f8f6ef; padding: 17px 19px; margin-top: 16px; cursor: pointer; }
+button:hover:not(:disabled) { background: #d65d3c; }
+button:disabled { cursor: wait; opacity: .5; }
+button span { font-size: 22px; }
+.message { margin: 17px 0 0; padding: 14px; font-size: 14px; }
+.message.error { background: #f9e2d8; color: #a63d26; }
+.message.success { display: grid; gap: 6px; background: #e0eee0; color: #2f6b40; }
+.message small { overflow-wrap: anywhere; font-size: 10px; }
+.privacy-note { color: #8a9189; font-size: 9px; line-height: 1.6; margin: 24px 0 0; }
+
+@media (max-width: 800px) {
+  .page-shell { grid-template-columns: 1fr; gap: 50px; padding: 42px 22px 60px; }
+  .flow { margin-top: 35px; }
+  h1 { font-size: clamp(54px, 16vw, 86px); }
+  .upload-panel { box-shadow: 8px 8px 0 #d6e5d6; }
+}
