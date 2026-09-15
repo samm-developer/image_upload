@@ -9,7 +9,7 @@ A React frontend uploads image bytes directly to Amazon S3 using a short-lived p
 ```bash
 cd backend
 cp .env.example .env
-# Set S3_BUCKET_NAME and ensure AWS credentials are available
+# Set S3_BUCKET_NAME, AWS_ACCESS_KEY_ID, and AWS_SECRET_ACCESS_KEY in backend/.env
 npm install
 npm run db:init
 npm run dev
