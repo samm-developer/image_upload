@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
@@ -13,6 +13,26 @@ export default function App() {
   const [state, setState] = useState('idle');
   const [error, setError] = useState('');
   const [uploadedFile, setUploadedFile] = useState(null);
+  const [images, setImages] = useState([]);
+  const [galleryState, setGalleryState] = useState('loading');
+
+  async function loadImages() {
+    setGalleryState('loading');
+    try {
+      const response = await fetch(`${API_URL}/uploads`);
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || 'Could not load images.');
+      setImages(result.images);
+      setGalleryState('ready');
+    } catch (loadError) {
+      setError(loadError.message);
+      setGalleryState('error');
+    }
+  }
+
+  useEffect(() => {
+    loadImages();
+  }, []);
 
   function chooseFile(event) {
     const selected = event.target.files?.[0];
@@ -60,6 +80,7 @@ export default function App() {
       if (!completeResponse.ok) throw new Error(complete.error || 'Could not confirm upload.');
       setUploadedFile(complete.upload);
       setState('success');
+      await loadImages();
     } catch (uploadError) {
       setError(uploadError.message);
       setState('error');
@@ -124,6 +145,32 @@ export default function App() {
           </div>
         )}
         <p className="privacy-note">The API issues a short-lived presigned URL. The file body travels straight to S3.</p>
+      </section>
+
+      <section className="gallery">
+        <div className="gallery-heading">
+          <div>
+            <p className="kicker">S3 LIBRARY</p>
+            <h2>All images <span>{images.length}</span></h2>
+          </div>
+          <button className="refresh-button" type="button" onClick={loadImages} disabled={galleryState === 'loading'}>Refresh ↻</button>
+        </div>
+        {galleryState === 'loading' && <p className="gallery-empty">Loading your library...</p>}
+        {galleryState === 'error' && <p className="gallery-empty">Could not load the image library.</p>}
+        {galleryState === 'ready' && images.length === 0 && <p className="gallery-empty">Uploaded images will appear here.</p>}
+        {images.length > 0 && (
+          <div className="image-grid">
+            {images.map((image) => (
+              <article className="image-card" key={image.id}>
+                <img src={image.url} alt={image.file_name} />
+                <div className="image-meta">
+                  <strong>{image.file_name}</strong>
+                  <small>{formatBytes(Number(image.file_size))}</small>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
       </section>
     </main>
   );

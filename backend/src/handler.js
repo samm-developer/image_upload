@@ -1,6 +1,6 @@
 import crypto from 'node:crypto';
-import { createPresignedUploadUrl } from './s3.js';
-import { completeUpload, createUpload } from './db.js';
+import { createPresignedDownloadUrl, createPresignedUploadUrl } from './s3.js';
+import { completeUpload, createUpload, listUploads } from './db.js';
 import { assertConfig, config } from './config.js';
 
 const json = (statusCode, body) => ({
@@ -9,7 +9,7 @@ const json = (statusCode, body) => ({
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': config.frontendOrigin,
     'Access-Control-Allow-Headers': 'Content-Type',
-    'Access-Control-Allow-Methods': 'POST,OPTIONS',
+    'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
   },
   body: JSON.stringify(body),
 });
@@ -24,6 +24,15 @@ export async function handler(event) {
     const method = event.requestContext?.http?.method || event.httpMethod;
     const path = event.rawPath || event.path || '';
     const payload = event.body ? JSON.parse(event.isBase64Encoded ? Buffer.from(event.body, 'base64') : event.body) : {};
+
+    if (method === 'GET' && path.endsWith('/uploads')) {
+      const uploads = await listUploads();
+      const images = await Promise.all(uploads.map(async (upload) => ({
+        ...upload,
+        url: await createPresignedDownloadUrl(upload.object_key),
+      })));
+      return json(200, { images });
+    }
 
     if (method === 'POST' && path.endsWith('/uploads/presigned-url')) {
       const fileName = String(payload.fileName || '').trim();

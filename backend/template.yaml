@@ -20,6 +20,8 @@ Resources:
           DATABASE_URL: postgresql://user:password@host:5432/presigned_url
           FRONTEND_ORIGIN: https://your-frontend.example.com
       Policies:
+        - S3ReadPolicy:
+            BucketName: your-bucket-name
         - S3WritePolicy:
             BucketName: your-bucket-name
       Events:

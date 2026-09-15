@@ -25,3 +25,13 @@ export async function completeUpload(id) {
   );
   return result.rows[0] || null;
 }
+
+export async function listUploads() {
+  const result = await pool.query(
+    `SELECT id, file_name, object_key, content_type, file_size, uploaded_at
+     FROM uploads
+     WHERE status = 'uploaded'
+     ORDER BY uploaded_at DESC`,
+  );
+  return result.rows;
+}

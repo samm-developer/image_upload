@@ -1,4 +1,4 @@
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { config } from './config.js';
 
@@ -9,6 +9,14 @@ export function createPresignedUploadUrl(objectKey, contentType) {
     Bucket: config.bucketName,
     Key: objectKey,
     ContentType: contentType,
+  });
+  return getSignedUrl(s3, command, { expiresIn: config.presignedUrlExpiresIn });
+}
+
+export function createPresignedDownloadUrl(objectKey) {
+  const command = new GetObjectCommand({
+    Bucket: config.bucketName,
+    Key: objectKey,
   });
   return getSignedUrl(s3, command, { expiresIn: config.presignedUrlExpiresIn });
 }
